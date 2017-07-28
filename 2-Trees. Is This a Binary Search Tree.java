@@ -7,43 +7,25 @@ The Node class is defined as follows:
         Node right;
      }
 */
-    boolean checkLeftSubtree(Node root, int max) {
+    boolean checkSubtree(Node root, int min, int max) {
         boolean result = true;
 
         if (root.left != null) {
-            result = (root.left.data < root.data) && checkLeftSubtree(root.left, root.data);
+            result = result && (root.left.data < root.data) && checkSubtree(root.left, min, root.data);
+            if (min != -1) {
+                result = result && (root.left.data > min);
+            }
         }
         if (root.right != null) {
-            int min = root.data;
-            result = result && (root.right.data > root.data) && (root.right.data < max) && checkRightSubtree(root.right, min);
-        }
-
-        return result;
-    }
-
-    boolean checkRightSubtree(Node root, int min) {
-        boolean result = true;
-
-        if (root.left != null) {
-            int max = root.data;
-            result = (root.left.data < root.data) && (root.left.data > min) && checkLeftSubtree(root.left, max);
-        }
-        if (root.right != null) {
-            result = result && (root.right.data > root.data) && checkRightSubtree(root.right, root.data);
+            result = result && (root.right.data > root.data) && checkSubtree(root.right, root.data, max);
+            if (max != -1) {
+                result = result && (root.right.data < max);
+            }
         }
 
         return result;
     }
 
     boolean checkBST(Node root) {
-        boolean result = true;
-
-        if (root.left != null) {
-            result = checkLeftSubtree(root.left, root.data);
-        }
-        if (root.right != null) {
-            result = result && checkRightSubtree(root.right, root.data);
-        }
-
-        return result;
+        return checkSubtree(root, -1, -1);
     }
