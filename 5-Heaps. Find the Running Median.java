@@ -143,19 +143,27 @@ public class Solution {
         for(int a_i=0; a_i < n; a_i++){
             int nextInt = in.nextInt();
 
-            if (maxHeap.size() == 0) {
+            if (minHeap.size() == 0 && maxHeap.size() != 0) { // look to max is enough
+                if (nextInt < maxHeap.peek()) {
+                    maxHeap.add(nextInt);
+                } else {
+                    minHeap.add(nextInt);
+                }
+            } else if (maxHeap.size() == 0 && minHeap.size() != 0) { // look to min is enough
+                if (nextInt > minHeap.peek()) {
+                    minHeap.add(nextInt);
+                } else {
+                    maxHeap.add(nextInt);
+                }
+            } else if (maxHeap.size() == 0 && minHeap.size() == 0) { // both empty - no matter where to add
                 maxHeap.add(nextInt);
-            } else if (minHeap.size() == 0) {
-                minHeap.add(nextInt);
-            } else if (nextInt > minHeap.peek()) {
-                minHeap.add(nextInt);
-            } else if (nextInt < maxHeap.peek()) {
-                maxHeap.add(nextInt);
-            } else { // put to any heap - no matter
-                minHeap.add(nextInt);
+            } else { // both not empty - normal situation
+                if (nextInt > minHeap.peek()) {
+                    minHeap.add(nextInt);
+                } else {
+                    maxHeap.add(nextInt);
+                }
             }
-
-
 
             if (Math.abs(minHeap.size() - maxHeap.size()) > 1) {
                 if (minHeap.size() > maxHeap.size()) {
@@ -165,10 +173,8 @@ public class Solution {
                 }
             }
 
-
-            System.out.println("min: " + minHeap.getContent());
-            System.out.println("max: " + maxHeap.getContent());
-
+            //System.out.println("min: " + minHeap.getContent());
+            //System.out.println("max: " + maxHeap.getContent());
 
             double result;
             if (minHeap.size() == maxHeap.size()) {
@@ -180,7 +186,6 @@ public class Solution {
                     result = maxHeap.peek();
                 }
             }
-
 
             result = round(result, 1);
             System.out.println(result);
