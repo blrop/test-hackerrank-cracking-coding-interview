@@ -49,11 +49,14 @@ class TrieItem {
 
     public TrieItem(char letter) {
         this.letter = letter;
-        childs = new ArrayList<>();
         completeWord = false;
     }
 
     public TrieItem findChildByChar(char letterToFind) {
+        if (childs == null) {
+            return null;
+        }
+
         TrieItem result = null;
 
         for (TrieItem child : childs) {
@@ -74,6 +77,10 @@ class TrieItem {
     }
 
     public TrieItem addChild(char letter) {
+        if (childs == null) {
+            childs = new ArrayList<>();
+        }
+
         TrieItem newItem = new TrieItem(letter);
         childs.add(newItem);
         return newItem;
@@ -84,6 +91,10 @@ class TrieItem {
     }
 
     public int getChildsCount() {
+        if (childs == null) {
+            return 0;
+        }
+
         int result = 0;
         for (TrieItem item : childs) {
             result += item.getChildsCount();
