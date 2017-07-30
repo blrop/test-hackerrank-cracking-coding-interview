@@ -4,7 +4,8 @@ public class Solution {
 
     public static void main(String[] args) {
         Trie trie = new Trie();
-        /*
+
+
         Scanner in = new Scanner(System.in);
 
         int n = in.nextInt();
@@ -18,8 +19,8 @@ public class Solution {
                 System.out.println(foundContacts);
             }
         }
-*/
 
+        /*
         trie.add("jack");
         trie.add("jake");
         trie.add("jaferson");
@@ -29,6 +30,7 @@ public class Solution {
         System.out.println(trie.find("ja"));
         System.out.println(trie.find("jk"));
         System.out.println(trie.find("jafe"));
+        System.out.println("-");
         System.out.println(trie.find("jaf"));
         System.out.println(trie.find("jafr"));
         System.out.println(trie.find("jafk"));
@@ -36,9 +38,8 @@ public class Solution {
         System.out.println(trie.find("do"));
         System.out.println(trie.find("don"));
         System.out.println(trie.find("ro"));
-
+        */
     }
-
 }
 
 class TrieItem {
@@ -77,17 +78,6 @@ class TrieItem {
         childs.add(newItem);
         return newItem;
     }
-
-//    public int getCompleteWordsCount() {
-//        int result = 0;
-//        for (TrieItem item : childs) {
-//            if (item.getCompleteWord()) {
-//                result++;
-//            }
-//
-//        }
-//        return result;
-//    }
 
     public boolean getCompleteWord() {
         return completeWord;
@@ -136,6 +126,11 @@ class Trie {
             }
         }
 
-        return currentItem.getChildsCount();
+        int result = 0;
+        if (currentItem.getCompleteWord()) {
+            result = 1;
+        }
+
+        return result + currentItem.getChildsCount();
     }
 }
