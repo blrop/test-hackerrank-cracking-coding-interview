@@ -1,8 +1,5 @@
-import java.io.*;
 import java.util.*;
-import java.text.*;
 import java.math.*;
-import java.util.regex.*;
 
 abstract class Heap {
     protected int capacity = 10;
@@ -56,6 +53,18 @@ abstract class Heap {
         heapifyUp();
     }
 
+    public String getContent() {
+        String result = "";
+        for (int i = 0; i < size; i++) {
+            result += items[i] + ", ";
+        }
+        return result;
+    }
+
+    public int size() {
+        return size;
+    }
+
     abstract protected void heapifyUp();
 
     abstract protected void heapifyDown();
@@ -105,7 +114,7 @@ class MaxIntHeap extends Heap {
                 smallerChildIndex = getRightChildIndex(index);
             }
 
-            if (items[index] < items[smallerChildIndex]) {
+            if (items[index] > items[smallerChildIndex]) {
                 break;
             } else {
                 swap(index, smallerChildIndex);
@@ -126,18 +135,55 @@ public class Solution {
     }
 
     public static void main(String[] args) {
-        Heap heap = new MaxIntHeap();
-        heap.add(4);
-        heap.add(10);
-        heap.add(2);
-        heap.add(20);
-        heap.add(3);
-        heap.add(5);
-        heap.add(6);
-        heap.add(1);
+        Heap maxHeap = new MaxIntHeap();
+        Heap minHeap = new MinIntHeap();
 
-        for (int i = 0; i < heap.items.length; i++) {
-            System.out.println(heap.items[i]);
+        Scanner in = new Scanner(System.in);
+        int n = in.nextInt();
+        for(int a_i=0; a_i < n; a_i++){
+            int nextInt = in.nextInt();
+
+            if (maxHeap.size() == 0) {
+                maxHeap.add(nextInt);
+            } else if (minHeap.size() == 0) {
+                minHeap.add(nextInt);
+            } else if (nextInt > minHeap.peek()) {
+                minHeap.add(nextInt);
+            } else if (nextInt < maxHeap.peek()) {
+                maxHeap.add(nextInt);
+            } else { // put to any heap - no matter
+                minHeap.add(nextInt);
+            }
+
+
+
+            if (Math.abs(minHeap.size() - maxHeap.size()) > 1) {
+                if (minHeap.size() > maxHeap.size()) {
+                    maxHeap.add(minHeap.poll());
+                } else {
+                    minHeap.add(maxHeap.poll());
+                }
+            }
+
+
+            System.out.println("min: " + minHeap.getContent());
+            System.out.println("max: " + maxHeap.getContent());
+
+
+            double result;
+            if (minHeap.size() == maxHeap.size()) {
+                result = (minHeap.peek() + maxHeap.peek()) / 2d;
+            } else {
+                if (minHeap.size() > maxHeap.size()) {
+                    result = minHeap.peek();
+                } else {
+                    result = maxHeap.peek();
+                }
+            }
+
+
+            result = round(result, 1);
+            System.out.println(result);
         }
     }
 }
