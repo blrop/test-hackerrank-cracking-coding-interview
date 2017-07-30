@@ -4,31 +4,31 @@ import java.text.*;
 import java.math.*;
 import java.util.regex.*;
 
-class MinIntHeap {
-    private int capacity = 10;
-    private int size = 0;
+abstract class Heap {
+    protected int capacity = 10;
+    protected int size = 0;
 
     int[] items = new int[capacity];
 
-    private int getLeftChildIndex(int parentIndex) { return 2 * parentIndex + 1; }
-    private int getRightChildIndex(int parentIndex) { return 2 * parentIndex + 2; }
-    private int getParentIndex(int childIndex) { return (childIndex - 1) / 2; }
+    protected int getLeftChildIndex(int parentIndex) { return 2 * parentIndex + 1; }
+    protected int getRightChildIndex(int parentIndex) { return 2 * parentIndex + 2; }
+    protected int getParentIndex(int childIndex) { return (childIndex - 1) / 2; }
 
-    private boolean hasLeftChild(int index) { return getLeftChildIndex(index) < size; }
-    private boolean hasRightChild(int index) { return getRightChildIndex(index) < size; }
-    private boolean hasParent(int index) { return getParentIndex(index) >= 0; }
+    protected boolean hasLeftChild(int index) { return getLeftChildIndex(index) < size; }
+    protected boolean hasRightChild(int index) { return getRightChildIndex(index) < size; }
+    protected boolean hasParent(int index) { return getParentIndex(index) >= 0; }
 
-    private int leftChild(int index) { return items[getLeftChildIndex(index)]; }
-    private int rightChild(int index) { return items[getRightChildIndex(index)]; }
-    private int parent(int index) { return items[getParentIndex(index)]; }
+    protected int leftChild(int index) { return items[getLeftChildIndex(index)]; }
+    protected int rightChild(int index) { return items[getRightChildIndex(index)]; }
+    protected int parent(int index) { return items[getParentIndex(index)]; }
 
-    private void swap(int indexOne, int indexTwo) {
+    protected void swap(int indexOne, int indexTwo) {
         int temp = items[indexOne];
         items[indexOne] = items[indexTwo];
         items[indexTwo] = temp;
     }
 
-    private void ensureExtraCapacity() {
+    protected void ensureExtraCapacity() {
         if (size == capacity) {
             items = Arrays.copyOf(items, capacity * 2);
             capacity *= 2;
@@ -56,7 +56,13 @@ class MinIntHeap {
         heapifyUp();
     }
 
-    private void heapifyUp() {
+    abstract protected void heapifyUp();
+
+    abstract protected void heapifyDown();
+}
+
+class MinIntHeap extends Heap {
+    protected void heapifyUp() {
         int index = size - 1;
         while (hasParent(index) && parent(index) > items[index]) {
             swap(getParentIndex(index), index);
@@ -64,11 +70,38 @@ class MinIntHeap {
         }
     }
 
-    private void heapifyDown() {
+    protected void heapifyDown() {
         int index = 0;
         while (hasLeftChild(index)) {
             int smallerChildIndex = getLeftChildIndex(index);
             if (hasRightChild(index) && rightChild(index) < leftChild(index)) {
+                smallerChildIndex = getRightChildIndex(index);
+            }
+
+            if (items[index] < items[smallerChildIndex]) {
+                break;
+            } else {
+                swap(index, smallerChildIndex);
+            }
+            index = smallerChildIndex;
+        }
+    }
+}
+
+class MaxIntHeap extends Heap {
+    protected void heapifyUp() {
+        int index = size - 1;
+        while (hasParent(index) && parent(index) < items[index]) {
+            swap(getParentIndex(index), index);
+            index = getParentIndex(index);
+        }
+    }
+
+    protected void heapifyDown() {
+        int index = 0;
+        while (hasLeftChild(index)) {
+            int smallerChildIndex = getLeftChildIndex(index);
+            if (hasRightChild(index) && rightChild(index) > leftChild(index)) {
                 smallerChildIndex = getRightChildIndex(index);
             }
 
@@ -93,7 +126,7 @@ public class Solution {
     }
 
     public static void main(String[] args) {
-        MinIntHeap heap = new MinIntHeap();
+        Heap heap = new MaxIntHeap();
         heap.add(4);
         heap.add(10);
         heap.add(2);
